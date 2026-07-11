@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Notificações{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">🔔 Notificações</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Mensagem</th>
+        <th>Tipo</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for notif in notificacoes %}
+      <tr>
+        <td>{{ notif["id_notificacao"] }}</td>
+        <td>{{ notif["mensagem"] }}</td>
+        <td>{{ notif["tipo"] }}</td>
+        <td>{{ notif["data"] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

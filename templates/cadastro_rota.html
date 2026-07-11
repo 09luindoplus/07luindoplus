@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Cadastro de Rota{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">🛣️ Cadastro de Rota</h2>
+
+  <form method="POST" action="/cadastro/rota" class="row g-3">
+    <div class="col-md-6">
+      <label for="nome" class="form-label">Nome da Rota</label>
+      <input type="text" id="nome" name="nome" class="form-control" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="preco" class="form-label">Preço</label>
+      <input type="number" step="0.01" id="preco" name="preco" class="form-control" required>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Cadastrar Rota</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

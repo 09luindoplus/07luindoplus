@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Cadastro de Aluno{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">👨‍🎓 Cadastro de Aluno</h2>
+
+  <form method="POST" action="/cadastro/aluno" class="row g-3">
+    <!-- ID automático (não editável) -->
+    <div class="col-md-2">
+      <label for="id_aluno" class="form-label">ID Aluno</label>
+      <input type="text" id="id_aluno" name="id_aluno" class="form-control" value="{{ id_gerado }}" readonly>
+    </div>
+
+    <!-- Nome do aluno -->
+    <div class="col-md-6">
+      <label for="nome" class="form-label">Nome do Aluno</label>
+      <input type="text" id="nome" name="nome" class="form-control" required>
+    </div>
+
+    <!-- Nome do encarregado -->
+    <div class="col-md-6">
+      <label for="encarregado" class="form-label">Nome do Encarregado</label>
+      <input type="text" id="encarregado" name="encarregado" class="form-control" required>
+    </div>
+
+    <!-- Rota -->
+    <div class="col-md-4">
+      <label for="rota" class="form-label">Rota</label>
+      <select id="rota" name="rota" class="form-select" required>
+        {% for rota in rotas %}
+          <option value="{{ rota['id_rota'] }}">{{ rota['nome'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Período -->
+    <div class="col-md-4">
+      <label for="periodo" class="form-label">Período</label>
+      <select id="periodo" name="periodo" class="form-select" required>
+        <option value="Manhã">Manhã</option>
+        <option value="Tarde">Tarde</option>
+        <option value="Noite">Noite</option>
+      </select>
+    </div>
+
+    <!-- Classe -->
+    <div class="col-md-4">
+      <label for="classe" class="form-label">Classe</label>
+      <input type="text" id="classe" name="classe" class="form-control" required>
+    </div>
+
+    <!-- Botão -->
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Cadastrar Aluno</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Emitir Fatura / Recibo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fatura.css') }}">
+</head>
+<body>
+  <div class="container mt-4">
+    <h2 class="fw-bold text-primary">🧾 Emitir Fatura</h2>
+
+    {% if erro %}
+      <div class="alert alert-danger">{{ erro }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('emitir_fatura') }}">
+
+      <!-- Pesquisa -->
+      <div class="mb-3">
+        <label for="pesquisaAluno" class="form-label">Pesquisar Aluno</label>
+        <input type="text" id="pesquisaAluno" class="form-control" required>
+        <ul id="sugestoes" class="list-group mt-2"></ul>
+      </div>
+
+      <!-- Campos ocultos -->
+      <input type="hidden" id="id_aluno" name="id_aluno">
+      <input type="hidden" id="id_rota" name="id_rota">
+
+      <!-- Dados do aluno -->
+      <div class="mb-2">
+        <label class="form-label">Nome</label>
+        <input type="text" id="nome_aluno" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Classe</label>
+        <input type="text" id="classe_aluno" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Período</label>
+        <input type="text" id="periodo_aluno" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Encarregado</label>
+        <input type="text" id="encarregado_aluno" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Telefone</label>
+        <input type="text" id="telefone_aluno" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Rota</label>
+        <input type="text" id="rota_aluno" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Último mês pago</label>
+        <input type="text" id="ultimo_mes_pago" class="form-control" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label">Status</label>
+        <input type="text" id="status_aluno" class="form-control" readonly>
+      </div>
+
+      <!-- Valor da Rota -->
+      <div id="valor_rota_div" class="mb-2">
+        <label class="form-label">Valor da Rota</label>
+        <input type="text" id="valor_rota" name="valor_rota" class="form-control" readonly>
+      </div>
+
+
+<!-- Tipo de Fatura 
+<div id="tipo_fatura" class="mb-3">
+  <label for="tipo" class="form-label">Tipo de Fatura</label>
+  <select id="tipo" name="tipo" class="form-select" required>
+    <option value="Adesão">Adesão</option>
+    <option value="Confirmação">Confirmação</option>
+    <option value="Taxa de Reativação">Taxa de Reativação</option>
+    <option value="Mensalidade">Mensalidade</option>
+  </select>
+</div>
+-->
+
+
+<!-- Tipo de Fatura -->
+<div id="tipo_fatura" class="mb-3">
+  <label for="tipo" class="form-label">Tipo de Fatura:</label>
+  <select id="tipo" name="tipo" class="form-select" required>
+    {% for adesao in adesoes %}
+      <option value="{{ adesao['tipo'] }}" data-valor="{{ adesao['valor'] }}">
+        {{ adesao['tipo'] }}
+      </option>
+    {% endfor %}
+    <option value="Mensalidade">Mensalidade</option>
+  </select>
+</div>
+
+<!-- Meses (seleção múltipla) -->
+<div id="meses-container" class="mb-3">
+  <label for="meses" class="form-label">Meses a pagar</label>
+  <select id="meses" name="quantidade_meses" class="form-select" multiple>
+    <option value="Setembro">Setembro</option>
+    <option value="Outubro">Outubro</option>
+    <option value="Novembro">Novembro</option>
+    <option value="Dezembro">Dezembro</option>
+    <option value="Janeiro">Janeiro</option>
+    <option value="Fevereiro">Fevereiro</option>
+    <option value="Março">Março</option>
+    <option value="Abril">Abril</option>
+    <option value="Maio">Maio</option>
+    <option value="Junho">Junho</option>
+    <option value="Julho">Julho</option>
+  </select>
+</div>
+      <!-- Valor pago -->
+      <div class="mb-3">
+        <label for="valor_pago" class="form-label">Valor Pago</label>
+        <input type="number" id="valor_pago" name="valor_pago" class="form-control" required>
+      </div>
+
+      <!-- Campos auxiliares para cálculo -->
+      <div class="mb-3">
+        <label for="valor_total" class="form-label">Valor Total</label>
+        <input type="text" id="valor_total" name="valor_total" class="form-control" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="preco_unitario" class="form-label">Preço Unitário</label>
+        <input type="text" id="preco_unitario" name="preco_unitario" class="form-control" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="remanescente" class="form-label">Saldo Remanescente</label>
+        <input type="text" id="remanescente" name="remanescente" class="form-control" readonly>
+      </div>
+
+      <!-- Método -->
+      <div class="mb-3">
+        <label for="metodo" class="form-label">Método de Pagamento</label>
+        <select id="metodo" name="metodo" class="form-select" required>
+          <option value="Dinheiro">Dinheiro</option>
+          <option value="Transferência">Transferência</option>
+          <option value="Multicaixa">Multicaixa</option>
+        </select>
+      </div>
+
+      <!-- Data -->
+      <div class="mb-3">
+        <label for="data_pagamento" class="form-label">Data</label>
+        <input type="date" id="data_pagamento" name="data_pagamento" class="form-control" required>
+      </div>
+
+      <!-- Observações -->
+      <div class="mb-3">
+        <label for="observacoes" class="form-label">Observações</label>
+        <textarea id="observacoes" name="observacoes" class="form-control"></textarea>
+      </div>
+
+      <!-- Botão -->
+      <div class="mt-3">
+        <button type="submit" class="btn btn-success">Emitir Fatura</button>
+      </div>
+    </form>
+  </div>
+
+<script src="{{ url_for('static', filename='js/fatura.js') }}"></script>
+</body>
+</html>

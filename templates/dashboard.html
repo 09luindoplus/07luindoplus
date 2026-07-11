@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Título -->
+  <div class="row mb-4">
+    <div class="col text-center">
+      <h2 class="fw-bold text-primary">📊 Painel de Controle</h2>
+      <p class="text-muted">Período atual: {{ periodo }}</p>
+    </div>
+  </div>
+
+  {% if session.get("perfil") in ["Administrador", "Operador"] %}
+  <div class="row mt-4">
+    <div class="col text-center">
+
+<a href="{{ url_for('emitir_fatura') }}" class="btn btn-lg btn-primary shadow-sm">
+  🧾 Emitir Fatura/Recibo
+</a>
+ </div>
+  
+  {% endif %}
+
+  <!-- Cards de resumo -->
+  <div class="row g-4 mt-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="card h-100 shadow-sm border-0 bg-gradient-primary text-white hover-card">
+        <div class="card-body text-center">
+          <i class="bi bi-people fs-1"></i>
+          <h5 class="card-title">Alunos</h5>
+          <h3 class="fw-bold">{{ resumo.alunos }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card h-100 shadow-sm border-0 bg-gradient-success text-white hover-card">
+        <div class="card-body text-center">
+          <i class="bi bi-person-badge fs-1"></i>
+          <h5 class="card-title">Motoristas</h5>
+          <h3 class="fw-bold">{{ resumo.motoristas }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card h-100 shadow-sm border-0 bg-gradient-warning text-dark hover-card">
+        <div class="card-body text-center">
+          <i class="bi bi-truck fs-1"></i>
+          <h5 class="card-title">Viaturas</h5>
+          <h3 class="fw-bold">{{ resumo.viaturas }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="card h-100 shadow-sm border-0 bg-gradient-danger text-white hover-card">
+        <div class="card-body text-center">
+          <i class="bi bi-geo-alt fs-1"></i>
+          <h5 class="card-title">Rotas</h5>
+          <h3 class="fw-bold">{{ resumo.rotas }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relatório financeiro rápido -->
+  <div class="row mt-5">
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h4 class="fw-bold text-primary mb-3">💳 Resumo Financeiro</h4>
+          <canvas id="financeChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico de barras mensal -->
+  <div class="row mt-5">
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h4 class="fw-bold text-primary mb-3">📈 Receitas vs Despesas por Mês</h4>
+          <canvas id="monthlyFinanceChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Doughnut resumo
+  new Chart(document.getElementById('financeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Receitas', 'Despesas', 'Saldo'],
+      datasets: [{
+        data: [{{ resumo.receitas }}, {{ resumo.despesas }}, {{ resumo.saldo }}],
+        backgroundColor: ['#198754', '#dc3545', '#0d6efd']
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+
+  // Gráfico de barras mensal
+  new Chart(document.getElementById('monthlyFinanceChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ meses | safe }},
+      datasets: [
+        { label: 'Receitas', data: {{ receitas_mensais | safe }}, backgroundColor: '#198754' },
+        { label: 'Despesas', data: {{ despesas_mensais | safe }}, backgroundColor: '#dc3545' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+
+<style>
+  .hover-card:hover {
+    transform: scale(1.05);
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
+  .bg-gradient-primary { background: linear-gradient(45deg, #0d6efd, #6ea8fe); }
+  .bg-gradient-success { background: linear-gradient(45deg, #198754, #71dd8a); }
+  .bg-gradient-warning { background: linear-gradient(45deg, #ffc107, #ffe082); }
+  .bg-gradient-danger { background: linear-gradient(45deg, #dc3545, #ff6b6b); }
+</style>
+{% endblock %}

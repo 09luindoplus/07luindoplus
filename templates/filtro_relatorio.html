@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Filtro de Relatórios{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">📊 Escolha o Relatório</h2>
+  <form method="POST" class="row g-3">
+    <div class="col-md-3">
+      <label for="ano" class="form-label">Ano</label>
+      <input type="number" name="ano" id="ano" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label for="tipo" class="form-label">Tipo</label>
+      <select name="tipo" id="tipo" class="form-select">
+        <option value="mensal">Mensal</option>
+        <option value="trimestral">Trimestral</option>
+        <option value="semestral">Semestral</option>
+        <option value="bianual">Bi-anual</option> <!-- Novo tipo -->
+        <option value="anual">Anual</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="rota" class="form-label">Rota</label>
+      <input type="text" name="rota" id="rota" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label for="mes" class="form-label">Mês</label>
+      <select name="mes" id="mes" class="form-select">
+        <option value="">Todos</option>
+        <option value="01">Janeiro</option>
+        <option value="02">Fevereiro</option>
+        <!-- até Dezembro -->
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="periodo" class="form-label">Período</label>
+      <select name="periodo" id="periodo" class="form-select">
+        <option value="">Todos</option>
+        <option value="Manhã">Manhã</option>
+        <option value="Tarde">Tarde</option>
+        <option value="Noite">Noite</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="forma_pagamento" class="form-label">Forma de Pagamento</label>
+      <select name="forma_pagamento" id="forma_pagamento" class="form-select">
+        <option value="">Todas</option>
+        <option value="dinheiro">Dinheiro</option>
+        <option value="cartao">Cartão</option>
+        <option value="pix">PIX</option>
+        <option value="boleto">Boleto</option>
+      </select>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Filtrar</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

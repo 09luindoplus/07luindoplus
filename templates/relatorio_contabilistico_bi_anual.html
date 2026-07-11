@@ -1,0 +1,30 @@
+def relatorio_contabilistico_bi_anual(ano, rota=None, periodo=None):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    filtros = ["data_emissao BETWEEN (SELECT inicio FROM periodos WHERE ano = ?) AND (SELECT fim FROM periodos WHERE ano = ?)"]
+    params = [ano, ano]
+
+    if rota:
+        filtros.append("rota = ?")
+        params.append(rota)
+
+    if periodo:
+        filtros.append("periodo = ?")  # coluna 'periodo' deve existir na tabela
+        params.append(periodo)
+
+    where_clause = " AND ".join(filtros)
+
+    query = f"""
+        SELECT strftime('%m', data_emissao) AS mes,
+               SUM(valor) AS total
+        FROM faturas
+        WHERE {where_clause}
+        GROUP BY mes
+        ORDER BY mes
+    """
+
+    cursor.execute(query, tuple(params))
+    dados = cursor.fetchall()
+    conn.close()
+    return dados

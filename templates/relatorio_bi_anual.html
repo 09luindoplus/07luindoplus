@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Relatório Bi-Anual{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">
+    📊 Relatório Bi-Anual de {{ ano }}
+    {% if rota %} - Rota {{ rota }}{% endif %}
+    {% if periodo %} - Período {{ periodo }}{% endif %}
+  </h2>
+
+  <!-- Tabela -->
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr><th>Bloco</th><th>Total</th></tr>
+    </thead>
+    <tbody>
+      {% for linha in dados %}
+      <tr>
+        <td>{{ linha['periodo'] }}</td>
+        <td>{{ linha['total'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Gráfico -->
+  <div class="mt-4">
+    <canvas id="grafico"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('grafico').getContext('2d');
+  const grafico = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [{% for linha in dados %}'{{ linha['periodo'] }}',{% endfor %}],
+      datasets: [{
+        label: 'Faturamento',
+        data: [{% for linha in dados %}{{ linha['total'] }},{% endfor %}],
+        backgroundColor: ['#007bff','#28a745','#ffc107'],
+        borderColor: '#333',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: 'Relatório Bi-Anual de {{ ano }}' }
+      },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

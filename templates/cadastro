@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5" style="max-width: 500px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="text-center mb-4">👤 Cadastro de Usuário</h3>
+
+      <form method="POST" action="{{ url_for('cadastro_usuario') }}">
+        <div class="mb-3">
+          <label for="usuario" class="form-label">Usuário</label>
+          <input type="text" class="form-control" id="usuario" name="usuario" required>
+        </div>
+        <div class="mb-3">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="senha" name="senha" required>
+        </div>
+        <div class="mb-3">
+          <label for="perfil" class="form-label">Perfil</label>
+          <select class="form-select" id="perfil" name="perfil" required>
+            <option value="Administrador">Administrador</option>
+            <option value="Operador">Operador (Secretário + Tesoureiro)</option>
+            <option value="Gestor Financeiro">Gestor Financeiro</option>
+            <option value="Motorista">Motorista</option>
+            <option value="Aluno">Aluno</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

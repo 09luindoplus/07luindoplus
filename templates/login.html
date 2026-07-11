@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="card shadow-lg border-0" style="max-width: 400px; width: 100%;">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-4 text-primary">🔐 Login</h3>
+
+      {% if erro %}
+        <div class="alert alert-danger text-center">{{ erro }}</div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuário" required>
+          <label for="usuario">Usuário</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
+          <label for="senha">Senha</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2">Entrar</button>
+      </form>
+
+      <p class="text-center mt-3 mb-0 text-muted" style="font-size: 0.9rem;">
+        © 2026 UIND-GEST Luindo Solucões Digitais
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

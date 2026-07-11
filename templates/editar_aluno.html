@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Editar Aluno{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">✏️ Editar Aluno</h2>
+
+  <form method="POST" action="{{ url_for('editar_aluno', id_aluno=aluno['id_aluno']) }}">
+    <!-- Nome -->
+    <div class="col-md-6">
+      <label for="nome" class="form-label">Nome do Aluno</label>
+      <input type="text" id="nome" name="nome" class="form-control" value="{{ aluno['nome'] }}" required>
+    </div>
+
+    <!-- Encarregado -->
+    <div class="col-md-6">
+      <label for="encarregado" class="form-label">Encarregado</label>
+      <input type="text" id="encarregado" name="encarregado" class="form-control" value="{{ aluno['encarregado'] }}" required>
+    </div>
+
+    <!-- Telefone -->
+    <div class="col-md-6">
+      <label for="telefone" class="form-label">Telefone</label>
+      <input type="tel" id="telefone" name="telefone" class="form-control"
+             pattern="[0-9]{9}" value="{{ aluno['telefone'] }}" required>
+    </div>
+
+    <!-- Rota -->
+    <div class="col-md-4">
+      <label for="rota" class="form-label">Rota</label>
+      <select id="rota" name="rota" class="form-select">
+        {% for rota in rotas %}
+          <option value="{{ rota['id_rota'] }}" {% if rota['id_rota'] == aluno['rota'] %}selected{% endif %}>
+            {{ rota['nome'] }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Período -->
+    <div class="col-md-4">
+      <label for="periodo" class="form-label">Período</label>
+      <select id="periodo" name="periodo" class="form-select">
+        <option value="Manhã" {% if aluno['periodo'] == 'Manhã' %}selected{% endif %}>Manhã</option>
+        <option value="Tarde" {% if aluno['periodo'] == 'Tarde' %}selected{% endif %}>Tarde</option>
+        <option value="Noite" {% if aluno['periodo'] == 'Noite' %}selected{% endif %}>Noite</option>
+      </select>
+    </div>
+
+    <!-- Classe -->
+    <div class="col-md-4">
+      <label for="classe" class="form-label">Classe</label>
+      <input type="text" id="classe" name="classe" class="form-control" value="{{ aluno['classe'] }}" required>
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-4">
+      <label for="status" class="form-label">Status</label>
+      <select id="status" name="status" class="form-select">
+        <option value="Ativo" {% if aluno['status'] == 'Ativo' %}selected{% endif %}>Ativo</option>
+        <option value="Inativo" {% if aluno['status'] == 'Inativo' %}selected{% endif %}>Inativo</option>
+      </select>
+    </div>
+
+    <!-- Botão -->
+    <div class="col-12 mt-3">
+      <button type="submit" class="btn btn-primary">💾 Salvar Alterações</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

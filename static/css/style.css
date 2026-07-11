@@ -1,0 +1,119 @@
+/* ============================
+   🌐 Estilo Global
+============================ */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+    color: #0d6efd;
+}
+a:hover {
+    color: #0a58ca;
+}
+
+/* ============================
+   🔝 Navbar
+============================ */
+.navbar {
+    font-size: 0.95rem;
+}
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.nav-link {
+    margin-right: 10px;
+    transition: color 0.3s ease;
+}
+.nav-link:hover {
+    color: #ffc107 !important;
+}
+
+/* ============================
+   📦 Cards
+============================ */
+.card {
+    border-radius: 12px;
+    border: none;
+}
+.card-body {
+    padding: 1.5rem;
+}
+.card h3 {
+    font-weight: 600;
+}
+
+/* ============================
+   📝 Formulários
+============================ */
+.form-control {
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+}
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+.form-label {
+    font-weight: 500;
+}
+
+/* Botões */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #0a58ca;
+}
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+/* ============================
+   📊 Tabelas
+============================ */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+.table th {
+    background-color: #0d6efd;
+    color: #fff;
+    font-weight: 600;
+}
+.table-striped tbody tr:nth-child(odd) {
+    background-color: #f2f6fc;
+}
+
+/* ============================
+   📱 Responsividade
+============================ */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    .card {
+        margin: 0 10px;
+    }
+    .table {
+        font-size: 0.85rem;
+    }
+}

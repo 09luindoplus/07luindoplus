@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Relatório {{ tipo|capitalize }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">
+    📊 Relatório {{ tipo|capitalize }} de {{ ano }}
+    {% if rota %} - Rota {{ rota }}{% endif %}
+    {% if mes %} - Mês {{ mes }}{% endif %}
+    {% if periodo %} - Período {{ periodo }}{% endif %}
+  </h2>
+
+
+<h2 class="fw-bold text-primary">
+  📊 Relatório {{ tipo|capitalize }} de {{ ano }}
+  {% if forma_pagamento %} - Pagamento: {{ forma_pagamento }}{% endif %}
+</h2>
+
+  <!-- Tabela -->
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr><th>Período</th><th>Total</th></tr>
+    </thead>
+    <tbody>
+      {% for linha in dados %}
+      <tr>
+        <td>{{ linha['periodo'] }}</td>
+        <td>{{ linha['total'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Gráfico -->
+  <div class="mt-4">
+    <canvas id="grafico"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('grafico').getContext('2d');
+  const grafico = new Chart(ctx, {
+    type: '{{ "bar" if tipo=="mensal" or tipo=="semestral" else "line" if tipo=="trimestral" else "pie" }}',
+    data: {
+      labels: [{% for linha in dados %}'{{ linha['periodo'] }}',{% endfor %}],
+      datasets: [{
+        label: 'Faturamento',
+        data: [{% for linha in dados %}{{ linha['total'] }},{% endfor %}],
+        backgroundColor: [
+          '#007bff','#28a745','#ffc107','#dc3545','#17a2b8','#6f42c1',
+          '#20c997','#6610f2','#fd7e14','#6c757d','#198754','#0dcaf0'
+        ],
+        borderColor: '#333',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: tipo === "pie" },
+        title: { display: true, text: 'Relatório {{ tipo|capitalize }} de {{ ano }}' }
+      },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

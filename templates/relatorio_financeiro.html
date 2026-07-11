@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Relatório Financeiro{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">
+    📊 Relatório Financeiro de {{ ano }}
+  </h2>
+
+  <!-- Tabela geral -->
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Mês</th>
+        <th>Total Entradas</th>
+        <th>Total Saídas</th>
+        <th>Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for linha in dados %}
+      <tr>
+        <td>{{ linha['mes'] }}</td>
+        <td>{{ linha['entradas'] }}</td>
+        <td>{{ linha['saidas'] }}</td>
+        <td>{{ linha['saldo'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Gráfico geral -->
+  <div class="mt-4">
+    <canvas id="grafico"></canvas>
+  </div>
+
+  <!-- Gráfico por forma de pagamento -->
+  <div class="mt-5">
+    <h4 class="fw-bold text-secondary">💳 Entradas por Forma de Pagamento</h4>
+    <canvas id="grafico_pagamento"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Gráfico geral (Entradas, Saídas, Saldo)
+  const ctx = document.getElementById('grafico').getContext('2d');
+  const grafico = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [{% for linha in dados %}'{{ linha['mes'] }}',{% endfor %}],
+      datasets: [
+        {
+          label: 'Entradas',
+          data: [{% for linha in dados %}{{ linha['entradas'] }},{% endfor %}],
+          borderColor: '#28a745',
+          backgroundColor: '#28a74533',
+          fill: true
+        },
+        {
+          label: 'Saídas',
+          data: [{% for linha in dados %}{{ linha['saidas'] }},{% endfor %}],
+          borderColor: '#dc3545',
+          backgroundColor: '#dc354533',
+          fill: true
+        },
+        {
+          label: 'Saldo',
+          data: [{% for linha in dados %}{{ linha['saldo'] }},{% endfor %}],
+          borderColor: '#007bff',
+          backgroundColor: '#007bff33',
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: 'Relatório Financeiro de {{ ano }}' }
+      },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Gráfico por forma de pagamento (Pizza)
+  const ctxPagamento = document.getElementById('grafico_pagamento').getContext('2d');
+  const graficoPagamento = new Chart(ctxPagamento, {
+    type: 'pie',
+    data: {
+      labels: ['Dinheiro', 'Transferência', 'Depósito', 'TPA'],
+      datasets: [{
+        label: 'Entradas por Forma de Pagamento',
+        data: [
+          {% for linha in dados_pagamento %}
+            {{ linha['total'] }},
+          {% endfor %}
+        ],
+        backgroundColor: ['#ffc107','#007bff','#28a745','#dc3545']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: 'Distribuição por Forma de Pagamento' }
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Cadastro de Aluno{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">👨‍🎓 Cadastro de Aluno</h2>
+
+  <form method="POST" action="/cadastro/aluno" class="row g-3">
+    <!-- ID automático (não editável) -->
+    <div class="col-md-2">
+      <label for="id_aluno" class="form-label">ID Aluno</label>
+      <input type="text" id="id_aluno" name="id_aluno" class="form-control" value="{{ id_gerado }}" readonly>
+    </div>
+
+    <!-- Nome do aluno -->
+    <div class="col-md-6">
+      <label for="nome" class="form-label">Nome do Aluno</label>
+      <input type="text" id="nome" name="nome" class="form-control" required>
+    </div>
+
+    <!-- Nome do encarregado -->
+    <div class="col-md-6">
+      <label for="encarregado" class="form-label">Nome do Encarregado</label>
+      <input type="text" id="encarregado" name="encarregado" class="form-control" required>
+    </div>
+
+    <!-- Telefone -->
+    <div class="col-md-6">
+      <label for="telefone" class="form-label">Telefone</label>
+      <input type="tel" id="telefone" name="telefone" class="form-control"
+             pattern="[0-9]{9}" placeholder="Ex: +2449________" required>
+    </div>
+
+<!-- Seleção da Rota -->
+<div class="col-md-4">
+  <label for="id_rota" class="form-label">Rota</label>
+  <select id="id_rota" name="id_rota" class="form-select">
+    {% for rota in rotas %}
+      <option value="{{ rota['id_rota'] }}" data-preco="{{ rota['preco'] }}">
+        {{ rota['nome'] }}
+      </option>
+    {% endfor %}
+  </select>
+</div>
+
+<!-- Preço da Rota (preenchido automaticamente) -->
+<div class="col-md-4">
+  <label for="valor_rota" class="form-label">Preço da Rota</label>
+  <input type="text" id="valor_rota" name="valor_rota" class="form-control" readonly>
+</div>
+
+
+    <!-- Período -->
+    <div class="col-md-4">
+      <label for="periodo" class="form-label">Período</label>
+      <select id="periodo" name="periodo" class="form-select" required>
+        <option value="Manhã">Manhã</option>
+        <option value="Tarde">Tarde</option>
+        <option value="Noite">Noite</option>
+      </select>
+    </div>
+
+    <!-- Classe -->
+    <div class="col-md-4">
+      <label for="classe" class="form-label">Classe</label>
+      <input type="text" id="classe" name="classe" class="form-control" required>
+    </div>
+
+    <!-- Botão -->
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Cadastrar Aluno</button>
+    </div>
+  </form>
+</div>
+
+<script>
+
+document.getElementById("id_rota").addEventListener("change", function () {
+    let preco = this.options[this.selectedIndex].getAttribute("data-preco");
+    document.getElementById("valor_rota").value = preco ? preco + " Kz" : "";
+});
+</script>
+
+{% endblock %}

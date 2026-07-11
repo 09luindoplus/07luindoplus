@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block title %}Relatório de Faturas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">📑 Relatório de Faturas</h2>
+
+  <!-- Botões de exportação -->
+  <div class="mb-3">
+    <button id="exportCSV" class="btn btn-success btn-sm">⬇️ Exportar CSV</button>
+    <button id="exportExcel" class="btn btn-info btn-sm">⬇️ Exportar Excel</button>
+  </div>
+
+  <!-- Seleção de linhas por página -->
+  <div class="mb-3">
+    <label for="rowsPerPage" class="form-label">Linhas por página:</label>
+    <select id="rowsPerPage" class="form-select form-select-sm" style="width:auto; display:inline-block;">
+      <option value="10">10</option>
+      <option value="20" selected>20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+
+  <table class="table table-striped mt-3" id="faturasTable">
+    <thead>
+      <tr>
+        <th class="sortable">ID<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Nº Fatura<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Tipo<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Aluno<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Classe<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Encarregado<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Mês<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Valor<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Pago<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Status<br><input type="text" class="form-control filter"></th>
+        <th class="sortable">Data<br><input type="text" class="form-control filter"></th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in faturas %}
+      <tr>
+        <td>{{ f['id_fatura'] }}</td>
+        <td>{{ f['numero_fatura'] }}</td>
+        {% if f['tipo'] == 'Mensalidade' %}
+          <td>Mensalidade - {{ f['mes'] }}</td>
+        {% else %}
+          <td>{{ f['tipo'] }}</td>
+        {% endif %}
+        <td>{{ f['nome_aluno'] }}</td>
+        <td>{{ f['classe'] }}</td>
+        <td>{{ f['encarregado'] }}</td>
+        <td>{{ f['mes'] }}</td>
+        <td>{{ f['valor'] }} Kz</td>
+        <td>{{ f['valor_pago'] }} Kz</td>
+        <td>{{ f['status'] }}</td>
+        <td>{{ f['data_pagamento'] }}</td>
+        <td>
+          <a href="{{ url_for('emitir_fatura', id_fatura=f['id_fatura']) }}" class="btn btn-primary btn-sm">Emitir</a>
+          <button onclick="window.print()" class="btn btn-secondary btn-sm">Imprimir</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Paginação -->
+  <nav>
+    <ul class="pagination" id="pagination"></ul>
+  </nav>
+</div>
+
+<!-- Script de filtro combinado + exportação + paginação dinâmica + ordenação -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const filters = document.querySelectorAll(".filter");
+  const table = document.getElementById("faturasTable");
+  const tbody = table.getElementsByTagName("tbody")[0];
+  const rows = tbody.getElementsByTagName("tr");
+  let rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+  let currentPage = 1;
+
+  // Função de renderização da paginação
+  function renderPagination() {
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    for (let i = 1; i <= totalPages; i++) {
+      const li = document.createElement("li");
+      li.className = "page-item" + (i === currentPage ? " active" : "");
+      const a = document.createElement("a");
+      a.className = "page-link";
+      a.textContent = i;
+      a.href = "#";
+      a.addEventListener("click", function(e) {
+        e.preventDefault();
+        currentPage = i;
+        showPage();
+        renderPagination();
+      });
+      li.appendChild(a);
+      pagination.appendChild(li);
+    }
+  }
+
+  // Mostrar apenas as linhas da página atual
+  function showPage() {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    Array.from(rows).forEach((row, index) => {
+      row.style.display = (index >= start && index < end) ? "" : "none";
+    });
+  }
+
+  // Filtro combinado
+  filters.forEach((input) => {
+    input.addEventListener("keyup", function() {
+      const filterValues = Array.from(filters).map(f => f.value.toLowerCase());
+
+      Array.from(rows).forEach(row => {
+        let visible = true;
+        const cells = row.getElementsByTagName("td");
+
+        filterValues.forEach((val, i) => {
+          if (val && cells[i]) {
+            const text = cells[i].textContent.toLowerCase();
+            if (!text.includes(val)) {
+              visible = false;
+            }
+          }
+        });
+
+        row.style.display = visible ? "" : "none";
+      });
+    });
+  });
+
+  // Exportar CSV
+  document.getElementById("exportCSV").addEventListener("click", function() {
+    let csv = [];
+    const rowsVisible = Array.from(rows).filter(r => r.style.display !== "none");
+    const headers = Array.from(table.querySelectorAll("thead th")).map(th => th.innerText.split("\n")[0]);
+    csv.push(headers.join(","));
+    rowsVisible.forEach(row => {
+      const cells = Array.from(row.getElementsByTagName("td")).map(td => td.innerText);
+      csv.push(cells.join(","));
+    });
+    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "relatorio_faturas.csv";
+    link.click();
+  });
+
+  // Exportar Excel (simples via CSV com extensão .xls)
+  document.getElementById("exportExcel").addEventListener("click", function() {
+    let csv = [];
+    const rowsVisible = Array.from(rows).filter(r => r.style.display !== "none");
+    const headers = Array.from(table.querySelectorAll("thead th")).map(th => th.innerText.split("\n")[0]);
+    csv.push(headers.join("\t"));
+    rowsVisible.forEach(row => {
+      const cells = Array.from(row.getElementsByTagName("td")).map(td => td.innerText);
+      csv.push(cells.join("\t"));
+    });
+    const blob = new Blob([csv.join("\n")], { type: "application/vnd.ms-excel" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "relatorio_faturas.xls";
+    link.click();
+  });
+
+  // Alterar número de linhas por página dinamicamente
+  document.getElementById("rowsPerPage").addEventListener("change", function() {
+    rowsPerPage = parseInt(this.value);
+    currentPage = 1;
+    showPage();
+    renderPagination();
+  });
+
+  // Ordenação por coluna
+  const headers = table.querySelectorAll("thead th.sortable");
+  headers.forEach((header, index) => {
+    let asc = true;
+    header.addEventListener("click", function() {
+      const sortedRows = Array.from(rows).sort((a, b) => {
+        const aText = a.getElementsByTagName("td")[index].textContent.trim().toLowerCase();
+        const bText = b.getElementsByTagName("td")[index].textContent.trim().toLowerCase();
+        return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+      });
+      asc = !asc;
+      sortedRows.forEach(row => tbody.appendChild(row));
+      showPage();
+    });
+  });
+
+  // Inicializa paginação
+  showPage();
+  renderPagination();
+});
+</script>
+{% endblock %}
+``

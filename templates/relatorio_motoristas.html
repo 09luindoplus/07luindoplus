@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Relatório de Motoristas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">📋 Relatório de Motoristas</h2>
+
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Carta</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in motoristas %}
+      <tr>
+        <td>{{ m['id_motorista'] }}</td>
+        <td>{{ m['nome'] }}</td>
+        <td>{{ m['telefone'] }}</td>
+        <td>{{ m['carta'] }}</td>
+        <td>{{ m['status'] }}</td>
+        <td>
+          <a href="/editar/motorista/{{ m['id_motorista'] }}" class="btn btn-sm btn-warning">Editar</a>
+          <a href="/inativar/motorista/{{ m['id_motorista'] }}" class="btn btn-sm btn-danger"
+             onclick="return confirm('Tem certeza que deseja inativar este motorista?')">Inativar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="mt-3">
+    <a href="/cadastro/motorista" class="btn btn-success">➕ Novo Motorista</a>
+    <button onclick="window.print()" class="btn btn-secondary">🖨️ Imprimir</button>
+  </div>
+</div>
+{% endblock %}

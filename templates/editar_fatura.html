@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Emitir Fatura/Recibo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fatura.css') }}">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Emitir Fatura/Recibo</h2>
+
+    <form id="faturaForm" method="POST" action="{{ url_for('emitir_fatura') }}">
+
+      <!-- Pesquisa de aluno -->
+      <label>Pesquisar aluno:</label>
+      <input type="text" id="pesquisaAluno" placeholder="Digite ID ou nome">
+      <ul id="sugestoes" class="list-group"></ul>
+
+      <!-- Campos do aluno -->
+      <input type="hidden" name="id_aluno" id="id_aluno">
+
+      <label>Aluno:</label>
+      <input type="text" id="nome_aluno" name="nome_aluno" readonly>
+
+      <label>Classe:</label>
+      <input type="text" id="classe_aluno" name="classe_aluno" readonly>
+
+      <label>Encarregado:</label>
+      <input type="text" id="encarregado_aluno" name="encarregado_aluno" readonly>
+
+      <label>Rota:</label>
+      <input type="text" id="rota_aluno" name="rota_aluno" readonly>
+
+      <label>Último mês pago:</label>
+      <input type="text" id="ultimo_mes" name="ultimo_mes" readonly>
+
+      <!-- Dados da fatura -->
+      <label>Mês(es) a pagar:</label>
+      <select name="meses[]" id="meses" multiple required>
+        {% for mes in calendario_escolar %}
+          <option value="{{ mes }}" {% if mes in meses_pagos %}disabled{% endif %}>
+            {{ mes }}
+          </option>
+        {% endfor %}
+      </select>
+      <small>Selecione até 11 meses</small>
+
+      <label>Descrição:</label>
+      <select name="descricao" id="descricao" class="form-select">
+        <option value="Mensalidade" selected>Mensalidade</option>
+        <option value="Inscrição" {% if aluno and aluno.status == 'ativo' %}disabled{% endif %}>Inscrição</option>
+        <option value="Confirmação" {% if aluno and aluno.status == 'ativo' %}disabled{% endif %}>Confirmação</option>
+        <option value="Reativação" {% if aluno and aluno.status == 'ativo' %}disabled{% endif %}>Reativação</option>
+      </select>
+
+      <label>Valor total:</label>
+      <input type="number" name="valor" id="valor" readonly>
+
+      <label>Valor pago:</label>
+      <input type="number" name="valor_pago" id="valor_pago" required>
+
+      <label>Método de pagamento:</label>
+      <select name="metodo" class="form-select" required>
+        <option>Dinheiro</option>
+        <option>Transferência</option>
+        <option>Multicaixa</option>
+        <option>Depósito</option>
+      </select>
+
+      <label>Data de pagamento:</label>
+      <input type="date" name="data_pagamento" value="{{ hoje }}" required>
+
+      <label>Observações:</label>
+      <textarea name="observacoes" class="form-control" placeholder="Notas adicionais..."></textarea>
+
+      <!-- Botão -->
+      <button type="submit" class="btn btn-primary">Emitir Fatura/Recibo</button>
+    </form>
+  </div>
+
+  <!-- Script de validação e autocomplete -->
+  <script src="{{ url_for('static', filename='js/fatura.js') }}"></script>
+</body>
+</html>

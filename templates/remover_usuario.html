@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Remover Usuário{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+  <div class="card shadow-sm">
+    <div class="card-body text-center">
+      <h3 class="text-danger mb-4">⚠️ Remover Usuário</h3>
+      <p>Tem certeza que deseja remover o usuário <strong>{{ usuario }}</strong>?</p>
+
+      {% if erro %}
+        <div class="alert alert-danger">{{ erro }}</div>
+      {% endif %}
+      {% if sucesso %}
+        <div class="alert alert-success">{{ sucesso }}</div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('remover_usuario', usuario=usuario) }}">
+        <button type="submit" class="btn btn-danger w-100 mb-2">Remover</button>
+        <a href="{{ url_for('listar_usuarios') }}" class="btn btn-secondary w-100">Cancelar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

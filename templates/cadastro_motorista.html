@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Cadastro de Motorista{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">🚐 Cadastro de Motorista</h2>
+
+  <form method="POST" action="/cadastro/motorista" class="row g-3">
+    <div class="col-md-6">
+      <label for="nome" class="form-label">Nome</label>
+      <input type="text" id="nome" name="nome" class="form-control" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="telefone" class="form-label">Telefone</label>
+      <input type="tel" id="telefone" name="telefone" class="form-control" pattern="[0-9]{9}" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="carta" class="form-label">Nº da Carta de Condução</label>
+      <input type="text" id="carta" name="carta" class="form-control" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="status" class="form-label">Status</label>
+      <select id="status" name="status" class="form-select">
+        <option value="Ativo">Ativo</option>
+        <option value="Inativo">Inativo</option>
+      </select>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Cadastrar Motorista</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

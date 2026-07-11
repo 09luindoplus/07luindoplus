@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Relatório de Rotas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="fw-bold text-primary">🛣️ Relatório de Rotas</h2>
+
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Preço</th>
+        <th>Total Alunos</th>
+        <th>Inativos</th>
+        <th>Desistentes</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rota in dados %}
+      <tr>
+        <td>{{ rota['id_rota'] }}</td>
+        <td>{{ rota['nome'] }}</td>
+        <td>{{ rota['preco'] }}</td>
+        <td>{{ rota['total_alunos'] }}</td>
+        <td>{{ rota['inativos'] }}</td>
+        <td>{{ rota['desistentes'] }}</td>
+        <td>
+          <a href="/alunos/rota/{{ rota['id_rota'] }}" class="btn btn-sm btn-info">Ver Alunos</a>
+          <button onclick="window.print()" class="btn btn-sm btn-secondary">🖨️ Imprimir</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
