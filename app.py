@@ -11,11 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "default_key")
 
-app = Flask(__name__)
-app.secret_key = "chave_super_segura_kajiombo"
-
+app.secret_key = os.getenv("SECRET_KEY", "chave_super_segura_kajiombo")
 
 # ============================
 # 🔒 Função de verificação de permissões
